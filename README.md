@@ -3,7 +3,7 @@
 This repository contains the source for my personal website, hosted via GitHub Pages.
 
 The site is a simple, single-page portfolio that highlights:
-- My work as a Junior Web Developer
+- My work as a Web Developer
 - Featured projects
 - Technical skills
 - Contact information
