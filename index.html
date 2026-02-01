@@ -29,7 +29,6 @@
       "@type": "Person",
       "name": "Aidan Timblin",
       "url": "https://aidantimblin.com",
-      "email": "mailto:AidanTimblin@gmail.com",
       "jobTitle": "Web Developer (Remote)",
       "address": {
         "@type": "PostalAddress",
@@ -78,7 +77,10 @@
                 <h2>Featured Projects</h2>
                 <div class="projects-grid">
                     <article class="project-card">
-                        <img src="images/document-tracker.png" alt="Document Tracker Screenshot" class="project-screenshot">
+                        <picture>
+                            <source type="image/webp" srcset="images/document-tracker.webp">
+                            <img src="images/document-tracker.png" alt="Document Tracker Screenshot" class="project-screenshot" width="1413" height="672">
+                        </picture>
                         <h3>Document Tracker</h3>
                         <p class="project-description">A server-rendered Rails application for managing business documents like contracts, invoices, and reports. Built with Rails conventions and standard MVC patterns, it emphasizes clarity and maintainability—keeping the interface minimal and focused on real-world usability without unnecessary complexity.</p>
                         <div class="project-tech">
@@ -91,7 +93,10 @@
                     </article>
                     
                     <article class="project-card">
-                        <img src="images/taskflow-screenshot.png" alt="TaskFlow Lite Screenshot" class="project-screenshot">
+                        <picture>
+                            <source type="image/webp" srcset="images/taskflow-screenshot.webp">
+                            <img src="images/taskflow-screenshot.png" alt="TaskFlow Lite Screenshot" class="project-screenshot" width="985" height="943">
+                        </picture>
                         <h3>TaskFlow</h3>
                         <p class="project-description">TaskFlow Lite is a small task management application built with Ruby on Rails. It emphasizes fundamentals—clear data modeling, RESTful controllers, and responsive layouts using Tailwind—without adding features like authentication or real-time updates that aren't needed at this scale.</p>
                         <div class="project-tech">
@@ -150,11 +155,33 @@
             <div class="container">
                 <h2>Get In Touch</h2>
                 <p class="contact-intro">I'm currently open to remote web development opportunities. Let's connect!</p>
+                
+                <form action="contact.php" method="POST" class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required aria-required="true">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required aria-required="true">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="5" required aria-required="true"></textarea>
+                    </div>
+                    
+                    <!-- Honeypot field (hidden from users) -->
+                    <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off">
+                    
+                    <!-- Time-based honeypot -->
+                    <input type="hidden" name="form_time" id="form_time" value="">
+                    
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+                
                 <div class="contact-links">
-                    <a href="mailto:AidanTimblin@gmail.com" class="contact-link email-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        AidanTimblin@gmail.com
-                    </a>
                     <a href="https://github.com/atimblin1" class="contact-link github-link" target="_blank" rel="noopener noreferrer">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                         GitHub Profile
@@ -183,6 +210,47 @@
     </footer>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Set form time for honeypot
+        if (document.getElementById('form_time')) {
+            document.getElementById('form_time').value = Math.floor(Date.now() / 1000);
+        }
+        
+        // Handle contact form messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const contactStatus = urlParams.get('contact');
+        
+        if (contactStatus === 'success') {
+            const message = document.createElement('div');
+            message.className = 'form-message success-message';
+            message.textContent = 'Thank you! Your message has been sent successfully.';
+            message.setAttribute('role', 'alert');
+            
+            const form = document.getElementById('contactForm');
+            if (form) {
+                form.parentNode.insertBefore(message, form);
+                form.reset();
+                // Scroll to message
+                message.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Clear URL parameter after showing message
+            window.history.replaceState({}, '', window.location.pathname);
+        } else if (contactStatus === 'error') {
+            const message = document.createElement('div');
+            message.className = 'form-message error-message';
+            message.textContent = 'Oops! There was an error sending your message. Please try again.';
+            message.setAttribute('role', 'alert');
+            
+            const form = document.getElementById('contactForm');
+            if (form) {
+                form.parentNode.insertBefore(message, form);
+                message.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Clear URL parameter
+            window.history.replaceState({}, '', window.location.pathname);
+        }
     </script>
 </body>
 </html>
